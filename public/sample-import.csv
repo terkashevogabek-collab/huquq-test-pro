@@ -1,0 +1,3 @@
+prompt,type,A,B,C,D,correct,points
+Normativ-huquqiy hujjat bo‘lmagan javobni aniqlang,single,Variant A,Variant B,Variant C,Variant D,B,1
+Ikki javobni belgilang,multi,Variant A,Variant B,Variant C,Variant D,B|D,2

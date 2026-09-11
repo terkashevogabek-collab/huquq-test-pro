@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Huquq Test Pro</title>
+<link rel="stylesheet" href="/styles.css">
+<style>
+body{min-height:100vh}
+.center{min-height:100vh;display:grid;place-items:center;padding:24px}
+.cardx{width:min(560px,100%);padding:30px;border-radius:24px;background:#10182a;border:1px solid #24314b;box-shadow:0 25px 90px #0007}
+.logo{width:58px;height:58px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#6d7eff,#a35cff);font-size:27px;margin-bottom:18px}
+h1{margin:0;font-size:32px}.muted{color:#8e9ab4}.roles{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:25px}
+.role{border:1px solid #2b3853;background:#0c1322;border-radius:17px;padding:18px;text-align:left;color:#eef2ff;cursor:pointer}
+.role:hover{border-color:#7566ec;transform:translateY(-1px)}
+.role b{display:block;margin:8px 0 5px;font-size:16px}.role span{display:block;color:#8593ac;font-size:12px;line-height:1.45}
+.form{display:none;margin-top:22px}.field{margin:12px 0}.field label{display:block;color:#aab6cf;font-size:12px;margin-bottom:6px}
+.field input{width:100%;padding:12px;border:1px solid #2a3750;border-radius:10px;background:#09111f;color:#fff}
+.btnx{width:100%;border:0;border-radius:11px;padding:12px;color:white;font-weight:800;background:linear-gradient(135deg,#7565ed,#a45bf0);cursor:pointer}
+.back{border:0;background:none;color:#9ba8c0;padding:0;cursor:pointer;margin-bottom:14px}
+.err{color:#ff9fb0;font-size:12px;margin-top:10px}.hint{font-size:11px;color:#73809a;margin-top:13px}
+@media(max-width:620px){.roles{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="center">
+<div class="cardx">
+<div class="logo">⚖️</div>
+<h1>Huquq Test <span style="color:#a487ff">Pro</span></h1>
+<p class="muted">Huquq fanidan test, nazorat va natijalar platformasi.</p>
+
+<div id="roles" class="roles">
+<button class="role" onclick="showForm('student')">👨‍🎓<b>O‘quvchi</b><span>Testlarni ishlash, xatolar va reyting.</span></button>
+<button class="role" onclick="showForm('admin')">👨‍🏫<b>Ustoz / Admin</b><span>Testlar, o‘quvchilar va statistika boshqaruvi.</span></button>
+</div>
+
+<div id="form" class="form">
+<button class="back" onclick="back()">← Orqaga</button>
+<h2 id="title"></h2><div class="muted" id="desc"></div>
+<div class="field"><label id="ll">Login</label><input id="login" autocomplete="username"></div>
+<div class="field"><label>Parol</label><input id="password" type="password" autocomplete="current-password"></div>
+<button class="btnx" onclick="login()">Kirish</button>
+<div id="err" class="err"></div>
+<div id="hint" class="hint"></div>
+</div>
+</div>
+</div>
+<script>
+let role="student";
+const demo={student:{login:"student",password:"student123",path:"/"},admin:{login:"admin",password:"admin123",path:"/admin.html"}};
+function showForm(r){role=r;document.getElementById("roles").style.display="none";document.getElementById("form").style.display="block";
+document.getElementById("title").textContent=r==="student"?"O‘quvchi kabinetiga kirish":"Ustoz / Admin paneliga kirish";
+document.getElementById("desc").textContent=r==="student"?"Login va parolingiz bilan kiring.":"Faqat admin uchun mo‘ljallangan boshqaruv paneli.";
+document.getElementById("ll").textContent=r==="student"?"O‘quvchi login":"Admin login";
+document.getElementById("login").placeholder=r==="student"?"student":"admin";
+document.getElementById("hint").textContent=r==="student"?"Kirishdan keyin o‘quvchi kabineti ochiladi.":"Kirishdan keyin admin paneli ochiladi.";
+}
+function back(){document.getElementById("form").style.display="none";document.getElementById("roles").style.display="grid";document.getElementById("err").textContent=""}
+async function login(){
+ try{
+  const r=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({login:document.getElementById("login").value.trim(),password:document.getElementById("password").value})});
+  const d=await r.json(); if(!r.ok) throw Error(d.error||"Kirish amalga oshmadi");
+  location.href=d.user.role==="admin"?"/admin.html":"/";
+ }catch(e){document.getElementById("err").textContent=e.message}
+}
+</script>
+</body></html>
